@@ -4,10 +4,13 @@ let incomeForm;
 let expenditureForm;
 let incomeList = [];
 let expenditureList = [];
+let IncTotal;
+let ExpTotal;
 let balansSummary;
 let income;
 let expenditure;
 let lastId = 0;
+
 
 document.addEventListener('DOMContentLoaded', () => {
     incomeUl = document.getElementById('incomeList');
@@ -19,10 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let expenditureTypeError = document.getElementById('expenditureTypeError');
     let expenditureDescError = document.getElementById('expenditureDescError');
 
-
     getIncomeList();
     getExpenditureList();
-    onRemoveBtnClick();
+    // onRemoveIncomeBtnClick();
+    // onRemoveExpenditureBtnClick();
 
     incomeForm.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -50,18 +53,19 @@ document.addEventListener('DOMContentLoaded', () => {
             incomeType.value = "";
             incomeDesc.value = "";
 
-            renderIncomeList();
+            updateIncomeList();
         
         } else {
             if (incomeType.value.length < 3) {
                 incomeType.classList.add('input-danger')
                 incomeTypeError.innerText = "description is too short - min. 3 letters!";
-        }   if (isNaN(incomeDesc.value)==true)  {
+            } if (isNaN(incomeDesc.value)==true)  {
             incomeDesc.classList.add('input-danger')
             incomeDescError.innerText = "digits only";
-        }
-    }  
-});
+            }
+        } 
+    }); 
+
 
     expenditureForm.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -90,13 +94,13 @@ document.addEventListener('DOMContentLoaded', () => {
             expenditureType.value = "";
             expenditureDesc.value = "";
 
-            renderExpenditureList();
+            updateExpenditureList();
         
         } else {
             if (expenditureType.value.length < 3) {
                 expenditureType.classList.add('input-danger')
                 expenditureTypeError.innerText = "description is too short - min. 3 letters!";
-        }   if (isNaN(expenditureDesc.value)==true)  {
+            } if (isNaN(expenditureDesc.value)==true)  {
                 expenditureDesc.classList.add('input-danger')
                 expenditureDescError.innerText = "digits only";
             }
@@ -104,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 })
 
-const renderIncomeList = () => {
+const updateIncomeList = () => {
 
     incomeUl.innerHTML = "";
 
@@ -115,15 +119,21 @@ const renderIncomeList = () => {
         let main = document.createElement('main');
         let heading = document.createElement('h5');
         let paragraph = document.createElement('p');
-        let buttonChange = document.createElement('button');
-        buttonChange.classList.add('btn', 'btn-secondary', 'btn-sm', 'button-change')
-        buttonChange.innerText = "Change";
-        
+        let editBtn  = document.createElement('button');
+        editBtn.classList.add('btn', 'btn-secondary', 'btn-sm', 'button-change')
+        editBtn.innerText = "Change";
+        // editBtn.id = `editbtn-${income.id}`;
+        // editBtn.addEventListener('click', function(){
+        //     onEditIncomeBtnClickon(income);
+        // });
+
         let buttonRemove = document.createElement('button');
         buttonRemove.classList.add('btn', 'btn-danger', 'btn-sm')
         buttonRemove.innerText = "Remove";
-        buttonRemove.id = income.id;
-        buttonRemove.addEventListener('click', onRemoveIncomeBtnClick)
+        // buttonRemove.id = income.id;
+        // buttonRemove.addEventListener('click', function() {
+            // onRemoveIncomeBtnClick()
+        // });
             
         heading.innerText = incomeItem.desc  + ' PLN';
         paragraph.innerText = incomeItem.name;
@@ -132,14 +142,16 @@ const renderIncomeList = () => {
         main.appendChild(paragraph);
 
         li.appendChild(main);
-        li.appendChild(buttonChange);
+        // li.appendChild(buttonChange);
         li.appendChild(buttonRemove);
 
         incomeUl.appendChild(li);
-    })
+        let incomeSummary = document.getElementById('incomeSummary');
+        incomeSummary.innerText = "test"
+    });
 }
 
-const renderExpenditureList = () => {
+const updateExpenditureList = () => {
     expenditureUl.innerHTML = "";
 
     expenditureList.forEach((expenditureItem, index) => {
@@ -149,15 +161,21 @@ const renderExpenditureList = () => {
         let main = document.createElement('main');
         let heading = document.createElement('h5');
         let paragraph = document.createElement('p');
-        let buttonChange = document.createElement('button');
-        buttonChange.classList.add('btn', 'btn-secondary', 'btn-sm')
-        buttonChange.innerText = "Change";
+        let editBtn  = document.createElement('button');
+        editBtn.classList.add('btn', 'btn-secondary', 'btn-sm', 'button-change')
+        editBtn.innerText = "Change";
+        // editBtn.id = `editbtn-${expenditure.id}`;
+        // editBtn.addEventListener('click', function(){
+        //     onEditExpenditureBtnClickon(income);
+        // });
         
         let buttonRemove = document.createElement('button');
         buttonRemove.classList.add('btn', 'btn-danger', 'btn-sm')
         buttonRemove.innerText = "Remove";
-        buttonRemove.id = expenditure.id;
-        buttonRemove.addEventListener('click', onRemoveExpenditureBtnClick)
+        // buttonRemove.id = expenditure.id;
+        // buttonRemove.addEventListener('click', function(){
+            // onRemoveExpenditureBtnClick);
+        // });
 
         heading.innerText = expenditureItem.desc + ' PLN';
         paragraph.innerText = expenditureItem.name; 
@@ -166,45 +184,54 @@ const renderExpenditureList = () => {
         main.appendChild(paragraph);
 
         li.appendChild(main);
-        li.appendChild(buttonChange);
+        // li.appendChild(buttonChange);
         li.appendChild(buttonRemove);
 
         expenditureUl.appendChild(li);
+        let expenditureSummary = document.getElementById('expenditureSummary');
+        expenditureSummary.innerText = "test"
     })
-}
+};
+
+const updateMoneyBalance = () => {
+        let moneyBalanceCounter = document.getElementById('moneyCounter');
+        moneyCounter.innerText = "test"
+};
+
+
+
+// const onRemoveIncomeBtnClick = (event) => {
+//     lastId++;
+//     incomeList.push(income);
+//     incomeList = incomeList.filter(function(elem){
+//         return elem.id !==Number(event.target.id);
+//     });
+//         updateIncomeList();
+// }
+
+// const onRemoveExpenditureBtnClick = (event) => {
+//     lastId++;
+//     expenditureList.push(expenditure);
+//     expenditureList = expenditureList.filter(function(elem){
+//         return elem.id !==Number(event.target.id);
+//     });
+//         updateExpenditureList();
+// }
 
 const getIncomeList = () => {
     if (localStorage.getItem('incomeList')){
         incomeList = JSON.parse(localStorage.getItem('incomeList'));
-        renderIncomeList();
-    }else{
-        incomeList=[]
+        updateIncomeList();
+    } else {
+        incomeList=[];
     }
 };
 
 const getExpenditureList = () => {
     if (localStorage.getItem('expenditureList')){
         expenditureList = JSON.parse(localStorage.getItem('expenditureList'));
-        renderExpenditureList();
-    }else{
-        expenditureList=[]
-    }
+        updateExpenditureList();
+    } else {
+        expenditureList=[];
+    } 
 };
-
-const onRemoveIncomeBtnClick = (event) => {
-    lastId++;
-    incomeList.push(income);
-    incomeList = incomeList.filter(function(elem){
-        return elem.id !==Number(event.target.id);
-    });
-        renderIncomeList();
-}
-
-const onRemoveExpenditureBtnClick = (event) => {
-    lastId++;
-    expenditureList.push(expenditure);
-    expenditureList = expenditureList.filter(function(elem){
-        return elem.id !==Number(event.target.id);
-    });
-        renderExpenditureList();
-}
