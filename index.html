@@ -10,35 +10,38 @@
 <body>
     <nav></nav>
     <main>
-        <header>Home budget</header>
-        <div class="container" id="mainContainer">
+        <header>
+            <h1>Budżet domowy</h1>
+        </header>
+        <div class='container' id="mainContainer">
             <div id="balansContainer">
                 <div class="logo"></div>
-                <h1>Money left:
+                <h2>Aktualny bilans: 
                     <span id="moneyCounter"></span>
-                </h1>
+                </h2>
             </div>
             <div id="InExContainer" class="row">
-                <div id="incomeContainer" class="col-6">
-                    <h1 class="title">Income</h1>
-                    <form id="incomeForm" class="mc-margin-20px">
+
+                <div id="incomeContainer" class="container">
+                    <h2 class="title">Przychód: </h2>
+                    <form id="incomeForm">
                         <div class="form-group" id="incomeType">
-                            <label for="incomeType">Income type: </label>
+                            <label for="incomeType">Opis: </label>
                             <input type="text" class="form-control" id="incomeType">
                             <small id="incomeTypeError" class="input-info-danger"></small>
                         </div>
                         <div class="input-group mb-3" id="incomeAmount">
-                            <label for="incomeAmount">Amount: </label>
+                            <label for="incomeAmount">Kwota: </label>
                             <input type="text" id="incomeAmount" class="form-control" aria-label="Amount (to the nearest PLN)">
-                            <span class="input-group-text">PLN</span>
+                            <span class="input-group-text">PLN </span>
                             <small id="incomeAmountError" class="input-info-danger"></small>
                         </div>
-                        <button type="submit" class="btn btn-primary">Add</button>
+                        <button type="submit" class="btn btn-primary">Zapisz</button>
                     </form>
-                    <div class="mc-margin-20px">
-                        <h2>Summary:
+                    <div>
+                        <h3>Suma
                             <span id="incomeSummary"></span>
-                        </h2>
+                        </h3>
                         
                         <div id="incomeSummaryContainer">
                             <ul class="list-group" id="incomeList">
@@ -47,26 +50,26 @@
                     </div>
                 </div>
 
-                <div id="expenditureContainer" class="col-6">
-                    <h1 class="title">Expenditure</h1>
-                    <form id="expenditureForm" class="mc-margin-20px">
+                <div id="expenditureContainer" class="container">
+                    <h2 class="title">Wydatek:</h2>
+                    <form id="expenditureForm">
                         <div class="form-group">
-                            <label for="expenditureType">Expenditure type: </label>
+                            <label for="expenditureType">Opis: </label>
                             <input type="text" class="form-control" id="expenditureType">
                             <small id="expenditureTypeError" class="input-info-danger"></small>
                         </div>
                         <div class="input-group mb-3">
-                            <label for="expenditureAmount">Amount: </label>
+                            <label for="expenditureAmount">Kwota: </label>
                             <input type="text" id="expenditureAmount" class="form-control" aria-label="Amount (to the nearest dollar)">
                             <span class="input-group-text">PLN</span>
                             <small id="expenditureAmountError" class="input-info-danger"></small>
                         </div>
-                        <button type="submit" class="btn btn-primary">Add</button>
+                        <button type="submit" class="btn btn-primary">Zapisz</button>
                     </form>
-                    <div class="mc-margin-20px">
-                        <h2>Summary:
+                    <div>
+                        <h3>Suma
                             <span id="expenditureSummary"></span>
-                        </h2>
+                        </h3>
                         
                         <div id="expenditureSummaryContainer">
                             <ul class="list-group" id="expenditureList">
