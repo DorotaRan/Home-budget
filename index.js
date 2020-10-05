@@ -1,5 +1,5 @@
-let incomeList;
-let expenditureList;
+let incomeList = []
+let expenditureList = []
 let incomeId = 0;
 let expenditureId = 0;
 let finalSum = 0;
@@ -39,7 +39,7 @@ incomeForm.addEventListener('submit', (event) => {
     if (incomeType.value.length > 2 && isNaN(incomeAmount.value)==false) {
         
         incomeList.push(income);
-        localStorage.setItem('incomeList',JSON.stringify(incomeList));
+        // localStorage.setItem('incomeList',JSON.stringify(incomeList));
         incomeType.value = "";
         incomeAmount.value = "";
 
@@ -110,7 +110,7 @@ const updateIncomeList = () => {
 
         let buttonEdit  = document.createElement('button');
         buttonEdit.classList.add('btn', 'btn-secondary', 'btn-sm', 'button-change');
-        buttonEdit.innerText = "Change";
+        buttonEdit.innerText = "Zmień";
         buttonEdit.id = `buttonEdit-${income.id}`;
         buttonEdit.addEventListener('click', function(){
             onEditIncomeBtnClicked(income)
@@ -118,7 +118,7 @@ const updateIncomeList = () => {
 
         let buttonRemove = document.createElement('button');
         buttonRemove.classList.add('btn', 'btn-danger', 'btn-sm')
-        buttonRemove.innerText = "Remove";
+        buttonRemove.innerText = "Usuń";
         buttonRemove.id = income.id;
         buttonRemove.addEventListener('click', onRemoveIncomeBtnClicked);
         
@@ -134,7 +134,7 @@ const updateIncomeList = () => {
 
         incomeUl.appendChild(li);
     })
-    window.localStorage.setItem('income', JSON.stringify(incomeList));
+    // window.localStorage.setItem('income', JSON.stringify(incomeList));
 }
 
 expenditureForm.addEventListener('submit', (event) => {
@@ -166,7 +166,7 @@ expenditureForm.addEventListener('submit', (event) => {
         }
 
         expenditureList.push(expenditure);
-        localStorage.setItem('expenditureList',JSON.stringify(expenditureList));
+        // localStorage.setItem('expenditureList',JSON.stringify(expenditureList));
         expenditureType.value = "";
         expenditureAmount.value = "";
 
@@ -235,7 +235,7 @@ const updateExpenditureList = () => {
         let paragraph = document.createElement('p');
         let buttonEdit = document.createElement('button');
         buttonEdit.classList.add('btn', 'btn-secondary', 'btn-sm', 'button-change')
-        buttonEdit.innerText = "Change";
+        buttonEdit.innerText = "Zmień";
         buttonEdit.id = `buttonEdit-${expenditure.id}`;
         buttonEdit.addEventListener('click', function(){
             onEditExpenditureBtnClicked(expenditure)
@@ -243,7 +243,7 @@ const updateExpenditureList = () => {
         
         let buttonRemove = document.createElement('button');
         buttonRemove.classList.add('btn', 'btn-danger', 'btn-sm')
-        buttonRemove.innerText = "Remove";
+        buttonRemove.innerText = "Usuń";
         buttonRemove.id = expenditure.id;
         buttonRemove.addEventListener('click', onRemoveExpenditureBtnClicked)
         
@@ -259,7 +259,7 @@ const updateExpenditureList = () => {
 
         expenditureUl.appendChild(li);
     })
-    window.localStorage.setItem('expenses', JSON.stringify(expenditureList));
+    // window.localStorage.setItem('expenses', JSON.stringify(expenditureList));
 }
 
 function updateIncomeCounter(elem) {
@@ -271,7 +271,7 @@ function updateIncomeCounter(elem) {
         })
         incomeCounter.innerText  =  sum + ' PLN';
         totalIncome = sum;
-        window.localStorage.setItem('incomeSum', JSON.stringify(totalIncome));
+        // window.localStorage.setItem('incomeSum', JSON.stringify(totalIncome));
 }
 
 function updateExpenditureCounter(elem) {
@@ -283,7 +283,7 @@ function updateExpenditureCounter(elem) {
         })
         expenditureCounter.innerText  =  sum2 + ' PLN';
         totalExpenses = sum2;
-        window.localStorage.setItem('expensesSum', JSON.stringify(totalExpenses));
+        // window.localStorage.setItem('expensesSum', JSON.stringify(totalExpenses));
 }
 
 function finalBalance() {
@@ -297,39 +297,40 @@ function finalBalance() {
              } else {
                 finalBalanceField.innerText = `Możesz wydać jeszcze ${finalSum} PLN`;
              }
-             window.localStorage.setItem('finalResult', JSON.stringify(finalSum));   
+            //  window.localStorage.setItem('finalResult', JSON.stringify(finalSum));   
 }
 
-const getIncomeList = () => {
-    if (localStorage.getItem('incomeList')){
-        incomeList = JSON.parse(localStorage.getItem('incomeList'));
-        updateIncomeList();
-        updateIncomeCounter()
-        finalBalance();
-    } else {
-        incomeList=[];
-    }
-    updateIncomeList();
-    updateIncomeCounter()
-    finalBalance();
-};
-getIncomeList();
+// const getIncomeList = () => {
+//     if (localStorage.getItem('incomeList')){
+//         incomeList = JSON.parse(localStorage.getItem('incomeList'));
+//         updateIncomeList();
+//     } else {
+//         incomeList=[];
+//     }
+//     updateIncomeCounter()
+//     finalBalance();
+// };
+// getIncomeList();
 
 
-const getExpenditureList = () => {
-    if (localStorage.getItem('expenditureList')){
-        expenditureList = JSON.parse(localStorage.getItem('expenditureList'));
-        updateExpenditureList();
-        updateExpenditureCounter()
-        finalBalance();
-    } else {
-        expenditureList=[];
-    } 
-    updateExpenditureList();
-    updateExpenditureCounter()
-    finalBalance();
-};
-getExpenditureList();
+
+
+// const getExpenditureList = () => {
+//     if (localStorage.getItem('expenditureList')){
+//         expenditureList = JSON.parse(localStorage.getItem('expenditureList'));
+//         updateExpenditureList();
+
+//     } else {
+//         expenditureList=[];
+//     } 
+//     updateExpenditureCounter()
+//     finalBalance();
+// };
+// getExpenditureList();
+
+
+
+
 
 
 
