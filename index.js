@@ -4,12 +4,14 @@ let incomeForm;
 let expenditureForm;
 let incomeList = [];
 let expenditureList = [];
-let IncTotal;
-let ExpTotal;
-let balansSummary;
 let income;
 let expenditure;
-let lastId = 0;
+let incomeId = 0;
+let expenditureId = 0;
+let sum;
+let sum2;
+let finalSum = 0;
+
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -18,205 +20,291 @@ document.addEventListener('DOMContentLoaded', () => {
     incomeForm = document.getElementById('incomeForm');
     expenditureForm = document.getElementById('expenditureForm');
     let incomeTypeError = document.getElementById('incomeTypeError');
-    let incomeDescError = document.getElementById('incomeDescError');
+    let incomeAmountError = document.getElementById('incomeAmountError');
     let expenditureTypeError = document.getElementById('expenditureTypeError');
-    let expenditureDescError = document.getElementById('expenditureDescError');
+    let expenditureAmountError = document.getElementById('expenditureAmountError');
 
-    getIncomeList();
-    getExpenditureList();
-    // onRemoveIncomeBtnClick();
-    // onRemoveExpenditureBtnClick();
-
+ 
     incomeForm.addEventListener('submit', (event) => {
         event.preventDefault();
         let incomeType = event.target.elements[0];
-        let incomeDesc = event.target.elements[1];
+        let incomeAmount = event.target.elements[1];
+        let income = {
+            name: incomeType.value, 
+            amount: incomeAmount.value,
+            id: incomeId
+        }
+        incomeId++;
 
         if (incomeType.value.length > 2) {
             incomeType.classList.remove('input-danger');
             incomeTypeError.innerText = "";
         } 
 
-        if (isNaN(incomeDesc.value)==false) {
-            incomeDesc.classList.remove('input-danger');
-            incomeDescError.innerText = "";
+        if (isNaN(incomeAmount.value)==false) {
+            incomeAmount.classList.remove('input-danger');
+            incomeAmountError.innerText = "";
         } 
     
-        if (incomeType.value.length > 2 && isNaN(incomeDesc.value)==false) {
-            income = {
-                name: incomeType.value, 
-                desc: incomeDesc.value,
-                id: lastId
-            }
+        if (incomeType.value.length > 2 && isNaN(incomeAmount.value)==false) {
+            
             incomeList.push(income);
             localStorage.setItem('incomeList',JSON.stringify(incomeList));
             incomeType.value = "";
-            incomeDesc.value = "";
+            incomeAmount.value = "";
 
             updateIncomeList();
+            updateIncomeCounter()
+            finalBalance();
         
         } else {
             if (incomeType.value.length < 3) {
                 incomeType.classList.add('input-danger')
-                incomeTypeError.innerText = "description is too short - min. 3 letters!";
-            } if (isNaN(incomeDesc.value)==true)  {
-            incomeDesc.classList.add('input-danger')
-            incomeDescError.innerText = "digits only";
+                incomeTypeError.innerText = "Description is too short - min. 3 letters!";
+            } if (isNaN(incomeAmount.value)==true)  {
+            incomeAmount.classList.add('input-danger')
+            incomeAmountError.innerText = "digits only";
             }
-        } 
-    }); 
+        }
+    })
 
+    function onRemoveIncomeBtnClicked(event){
+        incomeList = incomeList.filter(function(elem){
+            return Number(elem.id) !== Number(event.target.id);
+        })
+        updateIncomeList();
+        updateIncomeCounter()
+        finalBalance()
+    }
+
+    function onEditIncomeBtnClicked(currentIncome){
+        const incomeEditElem = document.getElementById(`container-${currentIncome.id}`);
+        incomeEditElem.innerHTML = `<input id='saveName-${currentIncome.id}' value=${currentIncome.name}></input><input id='saveAmount-${currentIncome.id}' value=${currentIncome.amount}></input>
+        <button onclick='onEditIncomeDataSave(${currentIncome.id})'>Zapisz</button>`;
+    }
+
+
+    function onEditIncomeDataSave(id){
+        let newIncomeNameElem = document.getElementById(`saveName-${id}`);
+        let newIncomeName  = newIncomeNameElem.value;
+        let newIncomeAmountElem = document.getElementById(`saveAmount-${id}`);
+        let newIncomeAmount = newIncomeAmountElem.value;
+
+        incomeNew = incomeList.find(function(elem){
+            return elem.id === id;
+        })
+        
+        incomeNew.name = newIncomeName;
+        incomeNew.amount = newIncomeAmount;
+        
+        updateIncomeList();
+        updateIncomeCounter()
+        finalBalance()
+    
+        console.log(newIncomeName);
+        console.log(newIncomeAmount);
+    }
+    
+    const updateIncomeList = () => {
+
+        incomeUl.innerHTML = "";
+    
+        incomeList.forEach((income) => {
+            let li = document.createElement('li');
+            li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center', 'flex-container');
+            li.id = `container-${income.id}`;
+    
+            let main = document.createElement('main');
+            let heading = document.createElement('h5');
+            let paragraph = document.createElement('p');
+
+            let buttonEdit  = document.createElement('button');
+            buttonEdit.classList.add('btn', 'btn-secondary', 'btn-sm', 'button-change');
+            buttonEdit.innerText = "Change";
+            buttonEdit.id = `buttonEdit-${income.id}`;
+            buttonEdit.addEventListener('click', function(){
+                onEditIncomeBtnClicked(income)
+            });
+    
+            let buttonRemove = document.createElement('button');
+            buttonRemove.classList.add('btn', 'btn-danger', 'btn-sm')
+            buttonRemove.innerText = "Remove";
+            buttonRemove.id = income.id;
+            buttonRemove.addEventListener('click', onRemoveIncomeBtnClicked);
+           
+            heading.innerText = income.amount  + ' PLN';
+            paragraph.innerText = income.name;
+    
+            main.appendChild(heading);
+            main.appendChild(paragraph);
+    
+            li.appendChild(main);
+            li.appendChild(buttonEdit);
+            li.appendChild(buttonRemove);
+    
+            incomeUl.appendChild(li);
+        })
+    }
 
     expenditureForm.addEventListener('submit', (event) => {
         event.preventDefault();
         let expenditureType = event.target.elements[0];
-        let expenditureDesc = event.target.elements[1];
+        let expenditureAmount = event.target.elements[1];
+        let expenditure = {
+            name: expenditureType.value, 
+            amount: expenditureAmount.value,
+            id: expenditureId
+        }
+        expenditureId++;
 
         if (expenditureType.value.length > 2) {
             expenditureType.classList.remove('input-danger');
             expenditureTypeError.innerText = "";
         } 
 
-        if (isNaN(expenditureDesc.value)==false) {
-            expenditureDesc.classList.remove('input-danger');
-            expenditureDescError.innerText = "";
+        if (isNaN(expenditureAmount.value)==false) {
+            expenditureAmount.classList.remove('input-danger');
+            expenditureAmountError.innerText = "";
         }
     
-        if (expenditureType.value.length > 2 && isNaN(expenditureDesc.value)==false) {
+        if (expenditureType.value.length > 2 && isNaN(expenditureAmount.value)==false) {
             expenditure = {
                 name: expenditureType.value, 
-                desc: expenditureDesc.value,
-                id: lastId
+                amount: expenditureAmount.value,
+                id: expenditureId
             }
 
             expenditureList.push(expenditure);
             localStorage.setItem('expenditureList',JSON.stringify(expenditureList));
             expenditureType.value = "";
-            expenditureDesc.value = "";
+            expenditureAmount.value = "";
 
             updateExpenditureList();
+            updateExpenditureCounter() 
+            finalBalance();
+        
         
         } else {
             if (expenditureType.value.length < 3) {
                 expenditureType.classList.add('input-danger')
-                expenditureTypeError.innerText = "description is too short - min. 3 letters!";
-            } if (isNaN(expenditureDesc.value)==true)  {
-                expenditureDesc.classList.add('input-danger')
-                expenditureDescError.innerText = "digits only";
+                expenditureTypeError.innerText = "Description is too short - min. 3 letters!";
+            } if (isNaN(expenditureAmount.value)==true)  {
+                expenditureAmount.classList.add('input-danger')
+                expenditureAmountError.innerText = "digits only";
             }
         }
     })
+    
+    function onRemoveExpenditureBtnClicked(event){
+        expenditureList = expenditureList.filter(function(elem){
+            return Number(elem.id) !== Number(event.target.id);
+        })
+        updateExpenditureList();
+        updateExpenditureCounter()
+        finalBalance()
+    }
+
+    function onEditExpenditureBtnClicked(currentExpenditure){
+        const expenditureEditElem = document.getElementById(`container-${currentExpenditure.id}`);
+        expenditureEditElem.innerHTML = `<input id='saveName-${currentExpenditure.id}' value=${currentExpenditure.name}></input>
+        <input id='saveAmount-${currentExpenditure.id}' value=${currentExpenditure.amount}></input>
+        <button onclick='onEditExpenditureDataSave(${currentExpenditure.id})'>Zapisz</button>`;
+    }
+
+
+    function onEditExpenditureDataSave(id){
+        let newExpenditureNameElem = document.getElementById(`saveName-${id}`);
+        let newExpenditureName  = newExpenditureNameElem.value;
+        let newExpenditureAmountElem = document.getElementById(`saveAmount-${id}`);
+        let newExpenditureAmount = newExpenditureAmountElem.value;
+
+        incomeNew = incomeList.find(function(elem){
+            return elem.id === id;
+        })
+        expenditureNew.name = newExpenditureName;
+        expenditureNew.amount = newExpenditureAmount;
+
+        updateExpenditureList();
+        updateExpenditureCounter()
+        finalBalance()
+    }
+   
+
+    const updateExpenditureList = () => {
+        expenditureUl.innerHTML = "";
+    
+        expenditureList.forEach((expenditure) => {
+            
+            let li = document.createElement('li');
+            li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+            li.id = `container-${expenditure.id}`;
+           
+            let main = document.createElement('main');
+            let heading = document.createElement('h5');
+            let paragraph = document.createElement('p');
+            let buttonEdit = document.createElement('button');
+            buttonEdit.classList.add('btn', 'btn-secondary', 'btn-sm', 'button-change')
+            buttonEdit.innerText = "Change";
+            buttonEdit.id = `buttonEdit-${expenditure.id}`;
+            buttonEdit.addEventListener('click', function(){
+                onEditExpenditureBtnClicked(expenditure)
+            })
+            
+            let buttonRemove = document.createElement('button');
+            buttonRemove.classList.add('btn', 'btn-danger', 'btn-sm')
+            buttonRemove.innerText = "Remove";
+            buttonRemove.id = expenditure.id;
+            buttonRemove.addEventListener('click', function(){
+                onRemoveExpenditureBtnClicked(income)
+            });
+
+            heading.innerText = expenditure.amount + ' PLN';
+            paragraph.innerText = expenditure.name; 
+    
+            main.appendChild(heading);
+            main.appendChild(paragraph);
+    
+            li.appendChild(main);
+            li.appendChild(buttonEdit);
+            li.appendChild(buttonRemove);
+    
+            expenditureUl.appendChild(li);
+        })
+    }
 })
 
-const updateIncomeList = () => {
-
-    incomeUl.innerHTML = "";
-
-    incomeList.forEach((incomeItem, index) => {
-        let li = document.createElement('li');
-        li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center', 'flex-container');
-
-        let main = document.createElement('main');
-        let heading = document.createElement('h5');
-        let paragraph = document.createElement('p');
-        let editBtn  = document.createElement('button');
-        editBtn.classList.add('btn', 'btn-secondary', 'btn-sm', 'button-change')
-        editBtn.innerText = "Change";
-        // editBtn.id = `editbtn-${income.id}`;
-        // editBtn.addEventListener('click', function(){
-        //     onEditIncomeBtnClickon(income);
-        // });
-
-        let buttonRemove = document.createElement('button');
-        buttonRemove.classList.add('btn', 'btn-danger', 'btn-sm')
-        buttonRemove.innerText = "Remove";
-        // buttonRemove.id = income.id;
-        // buttonRemove.addEventListener('click', function() {
-            // onRemoveIncomeBtnClick()
-        // });
-            
-        heading.innerText = incomeItem.desc  + ' PLN';
-        paragraph.innerText = incomeItem.name;
-
-        main.appendChild(heading);
-        main.appendChild(paragraph);
-
-        li.appendChild(main);
-        // li.appendChild(buttonChange);
-        li.appendChild(buttonRemove);
-
-        incomeUl.appendChild(li);
-        let incomeSummary = document.getElementById('incomeSummary');
-        incomeSummary.innerText = "test"
-    });
+function updateIncomeCounter(elem) {
+    let incomeCounter=document.getElementById('incomeSummary');
+    sum = 0
+        incomeList.filter(function(elem){ 
+            sum += Number(elem.amount);
+        })
+        incomeCounter.innerText  =  sum + ' PLN';
+    return sum       
 }
 
-const updateExpenditureList = () => {
-    expenditureUl.innerHTML = "";
+function updateExpenditureCounter(elem) {
+    let expenditureCounter=document.getElementById('expenditureSummary');
+    sum2 = 0
+        expenditureList.filter(function(elem){ 
+            sum2 += Number(elem.amount);
+        })
+        expenditureCounter.innerText  =  sum2 + ' PLN';
+    return sum2      
+}
 
-    expenditureList.forEach((expenditureItem, index) => {
-        let li = document.createElement('li');
-        li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
-       
-        let main = document.createElement('main');
-        let heading = document.createElement('h5');
-        let paragraph = document.createElement('p');
-        let editBtn  = document.createElement('button');
-        editBtn.classList.add('btn', 'btn-secondary', 'btn-sm', 'button-change')
-        editBtn.innerText = "Change";
-        // editBtn.id = `editbtn-${expenditure.id}`;
-        // editBtn.addEventListener('click', function(){
-        //     onEditExpenditureBtnClickon(income);
-        // });
-        
-        let buttonRemove = document.createElement('button');
-        buttonRemove.classList.add('btn', 'btn-danger', 'btn-sm')
-        buttonRemove.innerText = "Remove";
-        // buttonRemove.id = expenditure.id;
-        // buttonRemove.addEventListener('click', function(){
-            // onRemoveExpenditureBtnClick);
-        // });
-
-        heading.innerText = expenditureItem.desc + ' PLN';
-        paragraph.innerText = expenditureItem.name; 
-
-        main.appendChild(heading);
-        main.appendChild(paragraph);
-
-        li.appendChild(main);
-        // li.appendChild(buttonChange);
-        li.appendChild(buttonRemove);
-
-        expenditureUl.appendChild(li);
-        let expenditureSummary = document.getElementById('expenditureSummary');
-        expenditureSummary.innerText = "test"
-    })
-};
-
-const updateMoneyBalance = () => {
-        let moneyBalanceCounter = document.getElementById('moneyCounter');
-        moneyCounter.innerText = "test"
-};
-
-
-
-// const onRemoveIncomeBtnClick = (event) => {
-//     lastId++;
-//     incomeList.push(income);
-//     incomeList = incomeList.filter(function(elem){
-//         return elem.id !==Number(event.target.id);
-//     });
-//         updateIncomeList();
-// }
-
-// const onRemoveExpenditureBtnClick = (event) => {
-//     lastId++;
-//     expenditureList.push(expenditure);
-//     expenditureList = expenditureList.filter(function(elem){
-//         return elem.id !==Number(event.target.id);
-//     });
-//         updateExpenditureList();
-// }
+function finalBalance() {
+        finalSum = sum - sum2;
+        let finalBalanceField = document.getElementById('moneyCounter')
+        finalBalanceField.innerText = '';
+             if  (finalSum === 0) {
+                finalBalanceField.innerText = 'Bilans wynosi zero';
+             } else if (finalSum < 0 ) {
+                finalBalanceField.innerText = `Bilans jest ujemny. Jesteś na minusie ${finalSum} PLN`;
+             } else {
+                finalBalanceField.innerText = `Możesz wydać jeszcze ${finalSum} PLN`;
+             }
+}
 
 const getIncomeList = () => {
     if (localStorage.getItem('incomeList')){
