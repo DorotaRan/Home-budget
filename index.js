@@ -23,7 +23,6 @@ incomeForm.addEventListener('submit', (event) => {
         amount: incomeAmount.value,
         id: incomeId
     }
-    incomeId++;
     if (incomeType.value.length > 2) {
         incomeType.classList.remove('input-danger');
         incomeTypeError.innerText = '';
@@ -33,6 +32,7 @@ incomeForm.addEventListener('submit', (event) => {
         incomeAmountError.innerText = '';
     } 
     if (incomeType.value.length > 2 && isNaN(incomeAmount.value)==false) {
+        incomeId++;
         incomeList.push(income);
         localStorage.setItem('incomeList',JSON.stringify(incomeList));
         incomeType.value = '';
@@ -47,9 +47,9 @@ incomeForm.addEventListener('submit', (event) => {
         } if (isNaN(incomeAmount.value)==true)  {
             incomeAmount.classList.add('input-danger');
             incomeAmountError.innerText = 'wprowadź kwotę';
-        }
-    }
-})
+        };
+    };
+});
 
 function onRemoveIncomeBtnClicked(event) {
     incomeList = incomeList.filter(function(elem) {
@@ -125,7 +125,6 @@ expenditureForm.addEventListener('submit', (event) => {
         amount: expenditureAmount.value,
         id: expenditureId
     }
-    expenditureId++;
     if (expenditureType.value.length > 2) {
         expenditureType.classList.remove('input-danger');
         expenditureTypeError.innerText = '';
@@ -135,11 +134,7 @@ expenditureForm.addEventListener('submit', (event) => {
         expenditureAmountError.innerText = '';
     }
     if (expenditureType.value.length > 2 && isNaN(expenditureAmount.value)==false) {
-        expenditure = {
-            name: expenditureType.value, 
-            amount: expenditureAmount.value,
-            id: expenditureId
-        }
+        expenditureId++;
         expenditureList.push(expenditure);
         localStorage.setItem('expenditureList',JSON.stringify(expenditureList));
         expenditureType.value = '';
@@ -259,22 +254,31 @@ function finalBalance() {
 const getIncomeList = () => {
     if (localStorage.getItem('incomeList')) {
         incomeList = JSON.parse(localStorage.getItem('incomeList'));
+        let maxIncomeId = 0;
+        incomeList.map(function(obj){     
+            if (obj.id > maxIncomeId) maxIncomeId = obj.id;    
+        });
+        incomeId = Number(maxIncomeId) +1;
         updateIncomeList();
         updateIncomeCounter()
         finalBalance() 
     } else {
         incomeList=[];
     }
-};
+}; 
 getIncomeList();
 
 const getExpenditureList = () => {
     if (localStorage.getItem('expenditureList')) {
         expenditureList = JSON.parse(localStorage.getItem('expenditureList'));
+        let maxExpenditureId = 0;
+        expenditureList.map(function(obj){     
+            if (obj.id > maxExpenditureId) maxExpenditureId = obj.id;    
+        });
+        expenditureId = Number(maxExpenditureId) +1;
         updateExpenditureList();
         updateExpenditureCounter()
         finalBalance() 
-
     } else {
         expenditureList=[];
     } 
