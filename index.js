@@ -33,7 +33,7 @@ incomeForm.addEventListener('submit', (event) => {
     } 
     if (incomeType.value.length > 2 && isNaN(incomeAmount.value)==false) {
         incomeId++;
-        incomeList.push(income);
+         
         localStorage.setItem('incomeList',JSON.stringify(incomeList));
         incomeType.value = '';
         incomeAmount.value = '';
@@ -284,6 +284,8 @@ const getExpenditureList = () => {
     } 
 };
 getExpenditureList();
+
+
 
 
 
